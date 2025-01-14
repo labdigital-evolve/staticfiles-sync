@@ -2,7 +2,7 @@ name: Generate release pull request
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   generate-pr:
