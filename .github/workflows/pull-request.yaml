@@ -1,0 +1,31 @@
+name: Run tests
+
+on: [pull_request]
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+# TODO: add check if changie file is set
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: build binary
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          args: build --snapshot --clean --single-target
+        env:
+          GOPATH: ${{ env.GOPATH }}
