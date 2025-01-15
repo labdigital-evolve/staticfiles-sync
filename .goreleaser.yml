@@ -1,7 +1,7 @@
-project_name: cloudstaticfiles
+project_name: multicloud-cli
 
 builds:
-  - id: "cloudstaticfiles"
+  - id: "multicloud-cli"
     main: ./main.go
     binary: "{{ .ProjectName }}_v{{ .Version }}"
     flags:
@@ -31,7 +31,7 @@ changelog:
       - "^test:"
 
 archives:
-  - id: "cloudstaticfiles"
+  - id: "multicloud-cli"
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     format: zip
     files:
