@@ -1,3 +1,0 @@
-kind: Changed
-body: Create lock file after sync has finished instead of prior to sync
-time: 2025-01-15T08:49:36.541465+01:00
