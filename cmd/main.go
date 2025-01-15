@@ -41,8 +41,8 @@ var syncCmd = &cobra.Command{
 		remoteURL, _ := cmd.Flags().GetString("target")
 		lockFile, _ := cmd.Flags().GetString("lockfile")
 
-		if localDir == "" || remoteURL == "" {
-			log.Fatalf("localDir and remoteURL flags are required")
+		if localDir == "" || remoteURL == "" || lockFile == "" {
+			log.Fatalf("source, target and lockfile arguments are required")
 		}
 
 		// Parse the remote URL
@@ -61,14 +61,13 @@ var syncCmd = &cobra.Command{
 		}
 
 		// Check if lock file exists
-		if lockFile != "" {
-			exists, err := client.FileExists(ctx, filepath.Join(remoteDir, lockFile))
-			if err != nil {
-				log.Fatalf("failed to check lock file existence: %v", err)
-			}
-			if exists {
-				log.Fatalf("lock file %s exists, skipping sync", lockFile)
-			}
+		exists, err := client.FileExists(ctx, filepath.Join(remoteDir, lockFile))
+		if err != nil {
+			log.Fatalf("failed to check lock file existence: %v", err)
+		}
+		if exists {
+			fmt.Println("lock file", lockFile, "exists, skipping sync")
+			return
 		}
 
 		// Perform the sync
