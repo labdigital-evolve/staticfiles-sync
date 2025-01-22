@@ -78,7 +78,7 @@ var syncCmd = &cobra.Command{
 		fmt.Println("Directory synchronized successfully; creating lock file")
 
 		// Create the lockfile (empty file)
-		err = client.UploadFile(ctx, strings.NewReader(""), filepath.Join(remoteDir, lockFile))
+		err = client.UploadFile(ctx, strings.NewReader(""), filepath.Join(remoteDir, lockFile), "")
 		if err != nil {
 			log.Fatalf("failed to create lock file: %v", err)
 		}

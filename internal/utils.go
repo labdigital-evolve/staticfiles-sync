@@ -10,7 +10,7 @@ import (
 )
 
 type StorageClient interface {
-	UploadFile(ctx context.Context, file io.Reader, remotePath string) error
+	UploadFile(ctx context.Context, file io.Reader, remotePath string, contentType string) error
 	FileExists(ctx context.Context, remotePath string) (bool, error)
 }
 
@@ -45,7 +45,12 @@ func SyncDirectory(ctx context.Context, client StorageClient, localDir, remoteDi
 					return
 				}
 				defer file.Close()
-				if err := client.UploadFile(ctx, file, remotePath); err != nil {
+
+				// Get the content type based on file extension.
+				// We can't rely on auto-detection of mimetypes because
+				// of security implications. See https://stackoverflow.com/questions/70695214/net-http-does-detectcontenttype-support-javascript
+				contentType := GetContentType(path)
+				if err := client.UploadFile(ctx, file, remotePath, contentType); err != nil {
 					errCh <- err
 				} else {
 					fmt.Printf("Uploaded %s to %s\n", path, remotePath)
@@ -68,4 +73,18 @@ func SyncDirectory(ctx context.Context, client StorageClient, localDir, remoteDi
 		}
 	}
 	return nil
+}
+
+func GetContentType(file string) string {
+	ext := filepath.Ext(file)
+	switch ext {
+	case ".htm", ".html":
+		return "text/html; charset=UTF-8"
+	case ".css":
+		return "text/css; charset=UTF-8"
+	case ".js":
+		return "application/javascript; charset=UTF-8"
+	}
+
+	return ""
 }

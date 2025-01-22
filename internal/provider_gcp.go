@@ -22,11 +22,16 @@ func NewGCSClient(ctx context.Context, bucket string) (*GCSClient, error) {
 }
 
 // UploadFile to GCS
-func (c *GCSClient) UploadFile(ctx context.Context, file io.Reader, remotePath string) error {
+func (c *GCSClient) UploadFile(ctx context.Context, file io.Reader, remotePath string, contentType string) error {
 	bucket := c.client.Bucket(c.bucket)
 	obj := bucket.Object(remotePath)
 
 	writer := obj.NewWriter(ctx)
+
+	if contentType != "" {
+		writer.ContentType = contentType
+	}
+
 	defer writer.Close()
 
 	_, err := io.Copy(writer, file)
