@@ -10,11 +10,20 @@ import (
 )
 
 type StorageClient interface {
-	UploadFile(ctx context.Context, file io.Reader, remotePath string, contentType string) error
+	UploadFile(ctx context.Context, file io.Reader, remotePath string, syncContext FileSyncContext) error
 	FileExists(ctx context.Context, remotePath string) (bool, error)
 }
 
-func SyncDirectory(ctx context.Context, client StorageClient, localDir, remoteDir string, concurrency int) error {
+type SyncContext struct {
+	CacheControl string
+}
+
+type FileSyncContext struct {
+	CacheControl string
+	ContentType  string
+}
+
+func SyncDirectory(ctx context.Context, client StorageClient, localDir, remoteDir string, syncContext SyncContext, concurrency int) error {
 	sem := make(chan struct{}, concurrency)
 	var wg sync.WaitGroup
 	errCh := make(chan error, concurrency)
@@ -50,7 +59,14 @@ func SyncDirectory(ctx context.Context, client StorageClient, localDir, remoteDi
 				// We can't rely on auto-detection of mimetypes because
 				// of security implications. See https://stackoverflow.com/questions/70695214/net-http-does-detectcontenttype-support-javascript
 				contentType := GetContentType(path)
-				if err := client.UploadFile(ctx, file, remotePath, contentType); err != nil {
+
+				// Use input from syncContext to create the FileSyncContext in combiation with contentType
+				fileSyncContext := FileSyncContext{
+					CacheControl: syncContext.CacheControl,
+					ContentType:  contentType,
+				}
+
+				if err := client.UploadFile(ctx, file, remotePath, fileSyncContext); err != nil {
 					errCh <- err
 				} else {
 					fmt.Printf("Uploaded %s to %s\n", path, remotePath)

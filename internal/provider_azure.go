@@ -38,7 +38,7 @@ func NewAzureBlobClient(ctx context.Context, bucket string) (*AzureBlobClient, e
 	return &AzureBlobClient{client: client, container: container}, nil
 }
 
-func (c *AzureBlobClient) UploadFile(ctx context.Context, file io.Reader, remotePath string, contentType string) error {
+func (c *AzureBlobClient) UploadFile(ctx context.Context, file io.Reader, remotePath string, syncContext FileSyncContext) error {
 	var tempFile *os.File
 	var err error
 
