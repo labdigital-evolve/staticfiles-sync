@@ -1,10 +1,9 @@
 package internal
 
 import (
+	"cloud.google.com/go/storage"
 	"context"
 	"io"
-
-	"cloud.google.com/go/storage"
 )
 
 // GCSClient struct
@@ -22,14 +21,17 @@ func NewGCSClient(ctx context.Context, bucket string) (*GCSClient, error) {
 }
 
 // UploadFile to GCS
-func (c *GCSClient) UploadFile(ctx context.Context, file io.Reader, remotePath string, contentType string) error {
+func (c *GCSClient) UploadFile(ctx context.Context, file io.Reader, remotePath string, syncContext FileSyncContext) error {
 	bucket := c.client.Bucket(c.bucket)
 	obj := bucket.Object(remotePath)
 
 	writer := obj.NewWriter(ctx)
 
-	if contentType != "" {
-		writer.ContentType = contentType
+	if syncContext.ContentType != "" {
+		writer.ContentType = syncContext.ContentType
+	}
+	if syncContext.CacheControl != "" {
+		writer.CacheControl = syncContext.CacheControl
 	}
 
 	defer writer.Close()
