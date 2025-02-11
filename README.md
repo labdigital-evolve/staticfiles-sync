@@ -1,4 +1,4 @@
-# cloudstaticfiles
+# staticfiles-sync
 
 Simple CLI command to sync a directory to a cloud bucket (aws, gcp, azure). It
 uses a lockfile to indicate if a directory has been copied already.  This
