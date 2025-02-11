@@ -15,9 +15,6 @@ jobs:
         with:
           go-version-file: go.mod
 
-      - name: Set up nix
-        uses: cachix/install-nix-action@v30
-
       - name: Get the latest version
         id: latest
         uses: miniscruff/changie-action@v2
