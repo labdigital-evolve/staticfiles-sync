@@ -28,9 +28,11 @@ func NewS3Client(ctx context.Context, bucket string) (*S3Client, error) {
 // UploadFile to S3
 func (c *S3Client) UploadFile(ctx context.Context, file io.Reader, remotePath string, syncContext FileSyncContext) error {
 	_, err := c.client.PutObject(ctx, &s3.PutObjectInput{
-		Bucket: aws.String(c.bucket),
-		Key:    aws.String(remotePath),
-		Body:   file,
+		Bucket:       aws.String(c.bucket),
+		Key:          aws.String(remotePath),
+		Body:         file,
+		CacheControl: aws.String(syncContext.CacheControl),
+		ContentType:  aws.String(syncContext.ContentType),
 	})
 	return err
 }
