@@ -1,0 +1,3 @@
+kind: Fixed
+body: Pass cache-control and content-type to azure blob files
+time: 2025-02-11T20:25:35.479876+01:00

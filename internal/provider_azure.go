@@ -11,6 +11,7 @@ import (
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	"github.com/Azure/azure-sdk-for-go/sdk/storage/azblob"
+	"github.com/Azure/azure-sdk-for-go/sdk/storage/azblob/blob"
 )
 
 // AzureBlobClient struct
@@ -69,6 +70,11 @@ func (c *AzureBlobClient) UploadFile(ctx context.Context, file io.Reader, remote
 	_, err = c.client.UploadFile(ctx, c.container, remotePath, tempFile, &azblob.UploadFileOptions{
 		BlockSize:   4 * 1024 * 1024, // 4MB block size
 		Concurrency: 16,              // Adjust concurrency as needed
+
+		HTTPHeaders: &blob.HTTPHeaders{
+			BlobContentType:  &syncContext.ContentType,
+			BlobCacheControl: &syncContext.CacheControl,
+		},
 	})
 	return err
 }
