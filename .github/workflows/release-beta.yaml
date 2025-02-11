@@ -29,9 +29,6 @@ jobs:
         with:
           go-version-file: go.mod
 
-      - name: Set up nix
-        uses: cachix/install-nix-action@v30
-
       - name: Get hash
         shell: bash
         run: |
@@ -73,5 +70,5 @@ jobs:
       - name: Upload release
         uses: actions/upload-artifact@v4
         with:
-          name: cloudstaticfiles
+          name: staticfiles-sync
           path: dist/*
