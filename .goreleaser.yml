@@ -1,7 +1,7 @@
-project_name: multicloud-cli
+project_name: "staticfiles-sync"
 
 builds:
-  - id: "multicloud-cli"
+  - id: "staticfiles-sync"
     main: ./main.go
     binary: "{{ .ProjectName }}_v{{ .Version }}"
     flags:
@@ -15,7 +15,6 @@ builds:
       - darwin
     goarch:
       - amd64
-      - arm
       - arm64
     mod_timestamp: "{{ .CommitTimestamp }}"
 
@@ -31,7 +30,7 @@ changelog:
       - "^test:"
 
 archives:
-  - id: "multicloud-cli"
+  - id: "staticfiles-sync"
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     format: zip
     files:

@@ -27,12 +27,7 @@ func NewStorageClient(ctx context.Context, provider, bucket string) (internal.St
 }
 
 var RootCmd = &cobra.Command{
-	Use:   "multicloud-cli",
-	Short: "A CLI tool for multi-cloud file operations",
-}
-
-var syncCmd = &cobra.Command{
-	Use:   "sync",
+	Use:   "staticfiles-sync",
 	Short: "Sync a local directory with a specified cloud provider's remote directory",
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx := cmd.Context()
@@ -93,14 +88,12 @@ var syncCmd = &cobra.Command{
 }
 
 func init() {
-	syncCmd.Flags().StringP("source", "s", "", "Path to the local directory")
-	syncCmd.Flags().StringP("target", "t", "", "Remote URL in the format scheme://bucket/path")
-	syncCmd.Flags().StringP("lockfile", "l", "", "Remote file path that must not exist before sync")
-	syncCmd.Flags().String("cache-control", "", "Cache Control header value for uploaded files")
+	RootCmd.Flags().StringP("source", "s", "", "Path to the local directory")
+	RootCmd.Flags().StringP("target", "t", "", "Remote URL in the format scheme://bucket/path")
+	RootCmd.Flags().StringP("lockfile", "l", "", "Remote file path that must not exist before sync")
+	RootCmd.Flags().String("cache-control", "", "Cache Control header value for uploaded files")
 
-	syncCmd.MarkFlagRequired("lockfile")
-	syncCmd.MarkFlagRequired("source")
-	syncCmd.MarkFlagRequired("target")
-
-	RootCmd.AddCommand(syncCmd)
+	RootCmd.MarkFlagRequired("lockfile")
+	RootCmd.MarkFlagRequired("source")
+	RootCmd.MarkFlagRequired("target")
 }
