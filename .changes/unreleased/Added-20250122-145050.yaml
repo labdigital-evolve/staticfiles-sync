@@ -1,4 +1,0 @@
-kind: Added
-body: Option to set CacheControl headers on GCP bucket objects using --cache-control
-  option
-time: 2025-01-22T14:50:50.741347+01:00
