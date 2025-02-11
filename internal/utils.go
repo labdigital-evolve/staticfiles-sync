@@ -42,37 +42,28 @@ func SyncDirectory(ctx context.Context, client StorageClient, localDir, remoteDi
 			sem <- struct{}{}
 			defer func() { <-sem }()
 
-			exists, err := client.FileExists(ctx, remotePath)
+			file, err := os.Open(path)
 			if err != nil {
 				errCh <- err
 				return
 			}
-			if !exists {
-				file, err := os.Open(path)
-				if err != nil {
-					errCh <- err
-					return
-				}
-				defer file.Close()
+			defer file.Close()
 
-				// Get the content type based on file extension.
-				// We can't rely on auto-detection of mimetypes because
-				// of security implications. See https://stackoverflow.com/questions/70695214/net-http-does-detectcontenttype-support-javascript
-				contentType := GetContentType(path)
+			// Get the content type based on file extension.
+			// We can't rely on auto-detection of mimetypes because
+			// of security implications. See https://stackoverflow.com/questions/70695214/net-http-does-detectcontenttype-support-javascript
+			contentType := GetContentType(path)
 
-				// Use input from syncContext to create the FileSyncContext in combiation with contentType
-				fileSyncContext := FileSyncContext{
-					CacheControl: syncContext.CacheControl,
-					ContentType:  contentType,
-				}
+			// Use input from syncContext to create the FileSyncContext in combiation with contentType
+			fileSyncContext := FileSyncContext{
+				CacheControl: syncContext.CacheControl,
+				ContentType:  contentType,
+			}
 
-				if err := client.UploadFile(ctx, file, remotePath, fileSyncContext); err != nil {
-					errCh <- err
-				} else {
-					fmt.Printf("Uploaded %s to %s\n", path, remotePath)
-				}
+			if err := client.UploadFile(ctx, file, remotePath, fileSyncContext); err != nil {
+				errCh <- err
 			} else {
-				fmt.Printf("Skipping existing file: %s\n", remotePath)
+				fmt.Printf("Uploaded %s to %s\n", path, remotePath)
 			}
 		}()
 		return nil
