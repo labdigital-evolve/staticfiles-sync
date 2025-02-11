@@ -26,7 +26,7 @@ func NewAzureBlobClient(ctx context.Context, bucket string) (*AzureBlobClient, e
 		log.Fatal(err.Error())
 	}
 
-	parts := strings.Split(bucket, "/")
+	parts := strings.SplitN(bucket, "-", 2)
 	accountName := parts[0]
 	container := parts[1]
 
