@@ -4,7 +4,7 @@ tasks:
   build:
     env:
       GORELEASER_CURRENT_TAG: "v0.0.0"
-    cmd: goreleaser build --snapshot --clean --single-target --output multicloud-cli
+    cmd: goreleaser build --snapshot --clean --single-target --output staticfiles-sync
 
   download:
     cmd: go mod download
